@@ -1,4 +1,4 @@
-# Node.js
+# Node.js (usado no backend e frontend)
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -9,35 +9,63 @@ dist/
 
 # TypeScript
 *.tsbuildinfo
+next-env.d.ts
 
 # Editor de Código
 .vscode/
 .idea/
 *.swp
 
-# Configurações do Prisma
-prisma/.env
-prisma/migrations/
-prisma/dev.db
-prisma/dev.db-journal
+# Backend - Configurações do Prisma
+backend/prisma/.env
+backend/prisma/migrations/
+backend/prisma/dev.db
+backend/prisma/dev.db-journal
 
-# Banco de Dados (PostgreSQL)
-*.sqlite
-*.sqlite3
-*.pgsql
-*.log
-pgdata/
+# Backend - Banco de Dados (PostgreSQL, SQLite)
+backend/*.sqlite
+backend/*.sqlite3
+backend/*.pgsql
+backend/*.log
+backend/pgdata/
 
-# Logs
-logs/
-*.log
-yarn-error.log
-debug.log
-error.log
+# Backend - Logs
+backend/logs/
+backend/*.log
+backend/yarn-error.log
+backend/debug.log
+backend/error.log
 
-# Configurações do Sistema
+# Frontend - Build e Cache
+frontend/.next/
+frontend/.vercel/
+frontend/.turbo/
+frontend/out/
+frontend/build/
+
+# Frontend - Configurações do Sistema
+frontend/.env
+frontend/.env.local
+frontend/.env.development
+frontend/.env.test
+frontend/.env.production
+
+# Geral - Configurações do Sistema
 .env
 .env.local
 .env.development
 .env.test
 .env.production
+
+# Testes e Cobertura
+coverage/
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Arquivos Misc
+.DS_Store
+*.pem
