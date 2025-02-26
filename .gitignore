@@ -1,1 +1,43 @@
-node_modules
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
+
+# Editor de Código
+.vscode/
+.idea/
+*.swp
+
+# Configurações do Prisma
+prisma/.env
+prisma/migrations/
+prisma/dev.db
+prisma/dev.db-journal
+
+# Banco de Dados (PostgreSQL)
+*.sqlite
+*.sqlite3
+*.pgsql
+*.log
+pgdata/
+
+# Logs
+logs/
+*.log
+yarn-error.log
+debug.log
+error.log
+
+# Configurações do Sistema
+.env
+.env.local
+.env.development
+.env.test
+.env.production
