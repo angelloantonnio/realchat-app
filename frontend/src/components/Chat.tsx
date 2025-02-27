@@ -1,9 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useSocket from '../hooks/useSocket'
 
 export default function Chat() {
-  const { messages, sendMessage } = useSocket()
+  const { messages, sendMessage, loadMessages, page, setPage, totalPages } =
+    useSocket()
   const [input, setInput] = useState('')
+
+  useEffect(() => {
+    loadMessages(1)
+  }, [])
 
   const handleSend = () => {
     if (!input.trim()) return
@@ -11,8 +16,24 @@ export default function Chat() {
     setInput('')
   }
 
+  const handleLoadMore = () => {
+    if (page < totalPages) {
+      setPage(page + 1)
+      loadMessages(page + 1)
+    }
+  }
+
   return (
     <div className="flex flex-col h-screen max-w-2xl mx-auto border border-gray-700 rounded-md">
+      {/* Botão de carregar mais mensagens */}
+      {page < totalPages && (
+        <button
+          onClick={handleLoadMore}
+          className="p-2 bg-blue-600 text-white text-sm rounded-md self-center my-2"
+        >
+          Carregar mais mensagens
+        </button>
+      )}
 
       {/* Área das mensagens */}
       <div className="flex-1 overflow-y-auto p-4 bg-gray-900 text-white">
