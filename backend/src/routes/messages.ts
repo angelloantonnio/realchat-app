@@ -8,16 +8,19 @@ export default (io: Server) => {
   router.post('/', async (req, res) => {
     try {
       const { content, userId } = req.body
-      if (!content || !userId)
-        res.status(400).json({ error: 'Conteúdo e userId são obrigatórios' })
+
+      if (!content.trim()) {
+        res.status(400).json({ error: 'Conteúdo é obrigatório' })
+      }
 
       const message = await prisma.message.create({
-        data: { content, userId },
+        data: {
+          content,
+          userId: userId || null
+        },
         include: { user: true }
       })
-
-      io.emit('newMessage', message)
-
+      
       res.status(201).json(message)
     } catch (error) {
       res.status(500).json({ error: 'Erro ao criar mensagem' })
