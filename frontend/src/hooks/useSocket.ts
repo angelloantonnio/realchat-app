@@ -39,11 +39,13 @@ export default function useSocket() {
     }
   }
 
-  const sendMessage = (message: string) => {
-    if (socket && message.trim()) {
+  const sendMessage = async (message: string) => {
+    const token = localStorage.getItem('token')
+
+    if (socket && message.trim() && token) {
       socket.emit('sendMessage', {
         content: message,
-        userId: 'ID_FIXO_DO_USUARIO'
+        token
       })
     }
   }

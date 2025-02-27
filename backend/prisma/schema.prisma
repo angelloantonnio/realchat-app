@@ -17,13 +17,14 @@ model User {
   id       String  @id @default(uuid())
   name     String
   email    String  @unique
+  password String @db.VarChar(255)
   messages Message[]
 }
 
 model Message {
-  id       String  @id @default(uuid())
-  content  String
-  userId   String?
-  user     User?   @relation(fields: [userId], references: [id])
+  id        String   @id @default(uuid())
+  content   String   @db.VarChar(500)
+  userId    String
+  user      User   @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
