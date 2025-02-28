@@ -10,7 +10,7 @@ export function authenticateToken(
   next: NextFunction
 ) {
   const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(' ')[1]
+  const token = authHeader?.split(' ')[1]
 
   if (!token) {
     res.status(401).json({ error: 'Token não fornecido' })

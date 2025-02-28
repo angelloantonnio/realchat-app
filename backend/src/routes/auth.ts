@@ -33,9 +33,11 @@ router.post('/register', async (req, res) => {
     res
       .status(201)
       .json({ message: 'Usuário cadastrado com sucesso!', userId: user.id })
+    return
   } catch (error) {
     console.error('Erro ao registrar usuário:', error)
     res.status(500).json({ error: 'Erro ao registrar usuário' })
+    return
   }
 })
 
@@ -50,14 +52,8 @@ router.post('/login', async (req, res) => {
 
     const user = await prisma.user.findUnique({ where: { email } })
 
-    if (!user) {
-      res.status(400).json({ error: 'Usuário não encontrado' })
-      return
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-    if (!isPasswordValid) {
-      res.status(400).json({ error: 'Senha inválida' })
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      res.status(400).json({ error: 'Credenciais inválidas' })
       return
     }
 
@@ -66,15 +62,17 @@ router.post('/login', async (req, res) => {
     })
 
     res.json({ message: 'Login bem-sucedido!', token })
+    return
   } catch (error) {
     console.error('Erro no login:', error)
     res.status(500).json({ error: 'Erro no login' })
+    return
   }
 })
 
 router.post('/logout', (req, res) => {
   const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.split(' ')[1]
+  const token = authHeader?.split(' ')[1]
 
   if (!token) {
     res.status(401).json({ error: 'Token não fornecido' })
@@ -83,9 +81,10 @@ router.post('/logout', (req, res) => {
 
   revokedTokens.add(token)
   res.json({ message: 'Logout realizado com sucesso' })
+  return
 })
 
-export function checkTokenRevoked(token: string) {
+export function checkTokenRevoked(token: string): boolean {
   return revokedTokens.has(token)
 }
 

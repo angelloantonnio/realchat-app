@@ -27,29 +27,25 @@ export default (io: Server) => {
         content: message.content,
         createdAt: message.createdAt,
         user: message.user
-          ? {
-              id: message.user.id,
-              name: message.user.name,
-              email: message.user.email
-            }
+          ? { id: message.user.id, name: message.user.name }
           : null
       }
 
-      io.emit('newMessage', message)
-
+      io.emit('newMessage', safeMessage)
       res.status(201).json(safeMessage)
+      return
     } catch (error) {
       console.error('Erro ao criar mensagem:', error)
       res.status(500).json({ error: 'Erro ao criar mensagem' })
+      return
     }
   })
 
   router.get('/', authenticateToken, async (req, res) => {
     try {
-      let { page, limit } = req.query
-
-      const pageNumber = parseInt(page as string) || 1
-      const limitNumber = parseInt(limit as string) || 10
+      const { page = 1, limit = 10 } = req.query
+      const pageNumber = parseInt(page as string, 10)
+      const limitNumber = parseInt(limit as string, 10)
       const skip = (pageNumber - 1) * limitNumber
 
       const messages = await prisma.message.findMany({
@@ -66,13 +62,7 @@ export default (io: Server) => {
         id: msg.id,
         content: msg.content,
         createdAt: msg.createdAt,
-        user: msg.user
-          ? {
-              id: msg.user.id,
-              name: msg.user.name,
-              email: msg.user.email
-            }
-          : null
+        user: msg.user ? { id: msg.user.id, name: msg.user.name } : null
       }))
 
       res.json({
@@ -82,9 +72,11 @@ export default (io: Server) => {
         totalMessages,
         messages: safeMessages
       })
+      return
     } catch (error) {
       console.error('Erro ao buscar mensagens:', error)
       res.status(500).json({ error: 'Erro ao buscar mensagens' })
+      return
     }
   })
 
