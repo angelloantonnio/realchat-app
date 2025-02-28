@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
+import { checkTokenRevoked } from '../routes/auth'
 
 const SECRET_KEY = process.env.JWT_SECRET || 'default_secret_key'
 
@@ -13,6 +14,11 @@ export function authenticateToken(
 
   if (!token) {
     res.status(401).json({ error: 'Token não fornecido' })
+    return
+  }
+
+  if (checkTokenRevoked(token)) {
+    res.status(403).json({ error: 'Token revogado. Faça login novamente' })
     return
   }
 

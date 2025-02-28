@@ -5,6 +5,9 @@ import prisma from '../config/prisma'
 
 const router = Router()
 const SECRET_KEY = process.env.JWT_SECRET || 'default_secret_key'
+const TOKEN_EXPIRATION = '1h'
+
+const revokedTokens = new Set<string>()
 
 router.post('/register', async (req, res) => {
   try {
@@ -59,7 +62,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user.id, email: user.email }, SECRET_KEY, {
-      expiresIn: '1h'
+      expiresIn: TOKEN_EXPIRATION
     })
 
     res.json({ message: 'Login bem-sucedido!', token })
@@ -68,5 +71,22 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: 'Erro no login' })
   }
 })
+
+router.post('/logout', (req, res) => {
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+
+  if (!token) {
+    res.status(401).json({ error: 'Token não fornecido' })
+    return
+  }
+
+  revokedTokens.add(token)
+  res.json({ message: 'Logout realizado com sucesso' })
+})
+
+export function checkTokenRevoked(token: string) {
+  return revokedTokens.has(token)
+}
 
 export default router
